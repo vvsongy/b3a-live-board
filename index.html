@@ -1,0 +1,1539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080607">
+<meta name="color-scheme" content="dark">
+<title>B3A · Fu Tai Estate ↔ Shenzhen Bay Port</title>
+<style>
+  :root {
+    --bg: #080607;
+    --panel: #171011;
+    --panel-2: #1d1417;
+    --line: rgba(255, 237, 234, .075);
+    --line-strong: rgba(255, 237, 234, .15);
+    --text: #f7f1ef;
+    --muted: #aa9ea1;
+    --muted-2: #7f7275;
+    --accent: #ff4d5e;
+    --accent-soft: #ff9aa4;
+    --accent-strong: #d91e32;
+    --accent-deep: #7c0a16;
+    --accent-ink: #fff8f7;
+    --green: #65dca0;
+    --amber: #e5a15d;
+    --radius: 26px;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI",
+            "Helvetica Neue", "PingFang HK", "Noto Sans HK", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  .svg-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+
+  html { min-height: 100%; }
+
+  body {
+    min-height: 100vh;
+    min-height: 100svh;
+    margin: 0;
+    padding: clamp(20px, 4vw, 52px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+    font-family: var(--font);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    background:
+      radial-gradient(1100px 720px at 84% -16%, rgba(190, 18, 40, .20), transparent 62%),
+      radial-gradient(940px 660px at -20% 114%, rgba(112, 16, 31, .16), transparent 64%),
+      radial-gradient(760px 520px at 18% 8%, rgba(255, 77, 94, .045), transparent 60%),
+      var(--bg);
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255, 237, 234, .022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 237, 234, .022) 1px, transparent 1px);
+    background-size: 64px 64px;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 42%, #000 10%, transparent 76%);
+    mask-image: radial-gradient(ellipse at 50% 42%, #000 10%, transparent 76%);
+  }
+
+  button, a { -webkit-tap-highlight-color: transparent; }
+
+  .shell {
+    position: relative;
+    width: min(760px, 100%);
+    animation: rise .6s cubic-bezier(.22, .8, .3, 1) both;
+  }
+
+  /* ── Top bar ───────────────────────────────────────── */
+  .topbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(12px, 2.4vw, 24px);
+    margin-bottom: clamp(34px, 7vw, 56px);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-width: 0;
+    justify-self: start;
+  }
+
+  .brand-mark {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    color: var(--accent-ink);
+    background: linear-gradient(145deg, #ef3e4f 0%, #b70d21 48%, #620510 100%);
+    box-shadow: 0 12px 30px rgba(180, 12, 30, .28),
+                inset 0 1px 0 rgba(255, 255, 255, .34);
+  }
+
+  .brand-copy { display: flex; flex-direction: column; gap: 2px; }
+
+  .brand-name {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .19em;
+    line-height: 1.2;
+  }
+
+  .brand-sub {
+    color: var(--muted);
+    font-size: 11.5px;
+    letter-spacing: .005em;
+    white-space: nowrap;
+  }
+
+  /* Luxury brand line: white into champagne gold */
+  .masthead {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-width: 0;
+  }
+
+  .wing-crest {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 7px;
+    height: 45px;
+  }
+
+  .wing-crest::before {
+    content: "";
+    position: absolute;
+    width: 214px;
+    height: 52px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(255, 248, 236, .12), transparent 70%);
+    pointer-events: none;
+    animation: halo-breathe 8s ease-in-out infinite;
+  }
+
+  .wing {
+    position: relative;
+    display: block;
+    width: 84px;
+    height: 45px;
+    color: #ffffff;
+    opacity: 1;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, .32))
+            drop-shadow(0 0 22px rgba(255, 255, 255, .09))
+            drop-shadow(0 4px 16px rgba(212, 175, 55, .08));
+  }
+
+  .wing-left { transform: scaleX(-1); }
+
+  .crest-gem {
+    position: relative;
+    width: 7px;
+    height: 7px;
+    flex: 0 0 7px;
+    margin-bottom: 10px;
+    background: radial-gradient(circle at 50% 45%, #fffdf2 0 14%, #f4df9f 36%, #d4af37 60%, rgba(212, 175, 55, 0) 74%);
+    clip-path: polygon(50% 0%, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0% 50%, 39% 39%);
+    filter: drop-shadow(0 0 7px rgba(212, 175, 55, .55));
+    animation: gem-breathe 7s ease-in-out infinite;
+  }
+
+  .tagline-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+    min-width: 0;
+  }
+
+  .masthead-rule {
+    width: clamp(18px, 4vw, 42px);
+    height: 1px;
+    flex: 0 1 auto;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, .7));
+  }
+
+  .masthead-rule:last-child {
+    background: linear-gradient(90deg, rgba(212, 175, 55, .7), transparent);
+  }
+
+  .tagline {
+    margin: 0;
+    color: #fffaf0;
+    background: linear-gradient(100deg, #fffdf9 0%, #fffaf0 38%, #f2dca6 64%, #d4af37 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 9px rgba(212, 175, 55, .13));
+    font-family: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun", serif;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: .21em;
+    line-height: 1.45;
+    text-indent: .21em;
+    white-space: nowrap;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .035);
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .13em;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+    justify-self: end;
+    transition: color .25s, border-color .25s, background .25s;
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    flex: 0 0 7px;
+    border-radius: 50%;
+    background: var(--muted-2);
+    transition: background .25s;
+  }
+
+  .status-pill[data-state="live"] {
+    color: #c4e6d5;
+    border-color: rgba(101, 220, 160, .18);
+    background: rgba(101, 220, 160, .055);
+  }
+
+  .status-pill[data-state="live"] .status-dot {
+    background: var(--green);
+    animation: live-pulse 2.2s ease-out infinite;
+  }
+
+  .status-pill[data-state="connecting"] {
+    color: #ffc4ca;
+    border-color: rgba(255, 77, 94, .22);
+    background: rgba(255, 77, 94, .07);
+  }
+
+  .status-pill[data-state="connecting"] .status-dot { background: var(--accent); }
+
+  .status-pill[data-state="error"] {
+    color: #ffc08e;
+    border-color: rgba(255, 179, 64, .22);
+    background: rgba(255, 179, 64, .07);
+  }
+
+  .status-pill[data-state="error"] .status-dot { background: var(--amber); }
+
+  /* ── Route hero ────────────────────────────────────── */
+  .hero { margin-bottom: 24px; }
+
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .route-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    padding: 0 11px;
+    border-radius: 8px;
+    color: var(--accent-ink);
+    background: linear-gradient(135deg, #e5283c 0%, #b70d21 55%, #6e0712 100%);
+    box-shadow: 0 6px 20px rgba(200, 16, 46, .22),
+                inset 0 1px 0 rgba(255, 255, 255, .25);
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: .045em;
+  }
+
+  .eyebrow-text {
+    color: var(--muted);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+  }
+
+  .route-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 13px;
+    row-gap: 2px;
+    margin: 0;
+    font-size: clamp(29px, 5.35vw, 43px);
+    font-weight: 750;
+    letter-spacing: -.045em;
+    line-height: 1.08;
+  }
+
+  .route-title > span:not(.route-arrow) { white-space: nowrap; }
+
+  .route-arrow {
+    display: inline-flex;
+    align-items: center;
+    color: var(--accent);
+  }
+
+  .route-arrow svg { width: 40px; height: 22px; display: block; }
+
+  .route-sub {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
+    margin: 12px 0 0;
+    color: var(--muted);
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+
+  .route-sub .zh { color: #e6d9d7; }
+  .route-sub .minor-arrow { color: var(--muted-2); }
+  .route-sub .sep { color: #5b494c; }
+
+  /* ── Departure board ───────────────────────────────── */
+  .board {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(18px, 3.5vw, 28px);
+    padding-bottom: clamp(20px, 3.5vw, 28px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background:
+      radial-gradient(620px 280px at 100% 0%, rgba(217, 30, 50, .09), transparent 68%),
+      linear-gradient(165deg, rgba(31, 20, 22, .96), rgba(11, 7, 9, .98));
+    box-shadow: 0 34px 90px rgba(0, 0, 0, .58),
+                inset 0 1px 0 rgba(255, 237, 234, .06);
+  }
+
+  .board::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    top: -80px;
+    right: -80px;
+    width: 230px;
+    height: 230px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 77, 94, .06);
+    pointer-events: none;
+  }
+
+  .board > * { position: relative; z-index: 1; }
+
+  .board-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 17px;
+  }
+
+  .board-head h2 {
+    margin: 0;
+    color: var(--muted);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .17em;
+    text-transform: uppercase;
+  }
+
+  .board-clock {
+    color: var(--muted-2);
+    font-size: 11.5px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: .015em;
+    white-space: nowrap;
+  }
+
+  .departures { min-height: 188px; }
+
+  /* Next bus */
+  .next-card {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+    overflow: hidden;
+    padding: clamp(20px, 4vw, 30px);
+    border: 1px solid rgba(255, 77, 94, .24);
+    border-radius: 20px;
+    background:
+      radial-gradient(520px 300px at 100% 0%, rgba(217, 30, 50, .22), transparent 66%),
+      linear-gradient(135deg, rgba(160, 20, 38, .17), rgba(70, 8, 16, .045));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .045),
+                0 18px 50px rgba(90, 8, 20, .10);
+  }
+
+  .next-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(115deg, rgba(255, 255, 255, .055), transparent 42%);
+  }
+
+  .next-main, .next-side { position: relative; }
+
+  .next-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 11px;
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .165em;
+    text-transform: uppercase;
+  }
+
+  .next-label .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(255, 77, 94, .65);
+  }
+
+  .next-time {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    min-height: 92px;
+    line-height: .8;
+  }
+
+  .next-time .minutes {
+    display: inline-block;
+    color: var(--accent);
+    background: linear-gradient(180deg, #ff8a96 0%, #ff3f52 38%, #d2162c 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 12px 30px rgba(225, 29, 46, .18));
+    font-size: clamp(78px, 15.5vw, 110px);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.075em;
+    line-height: .76;
+  }
+
+  .next-time .unit {
+    color: rgba(255, 241, 239, .7);
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: .01em;
+  }
+
+  .next-time.is-due .minutes {
+    font-size: clamp(52px, 11vw, 76px);
+    letter-spacing: -.045em;
+  }
+
+  .next-time.is-due .unit { display: none; }
+
+  .next-note {
+    margin-top: 15px;
+    color: var(--muted);
+    font-size: 11.5px;
+    letter-spacing: .01em;
+  }
+
+  .next-note .remark {
+    display: inline-block;
+    padding: 4px 7px;
+    border: 1px solid rgba(255, 237, 234, .11);
+    border-radius: 6px;
+    background: rgba(0, 0, 0, .14);
+    color: #ddcfd0;
+    font-size: 10px;
+  }
+
+  .next-side {
+    flex: 0 0 auto;
+    padding-bottom: 4px;
+    text-align: right;
+  }
+
+  .side-label {
+    color: var(--muted-2);
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+
+  .side-clock {
+    margin-top: 5px;
+    color: #fff9f7;
+    font-size: clamp(20px, 3vw, 25px);
+    font-weight: 750;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.02em;
+  }
+
+  .side-stop {
+    margin-top: 7px;
+    color: var(--muted-2);
+    font-size: 10.5px;
+  }
+
+  /* Following buses */
+  .later-list { margin-top: 10px; }
+
+  .later-row {
+    display: grid;
+    grid-template-columns: 54px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 17px;
+    border: 1px solid transparent;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, .032);
+    transition: background .2s, border-color .2s;
+  }
+
+  .later-row + .later-row { margin-top: 8px; }
+
+  .later-row:hover {
+    border-color: var(--line);
+    background: rgba(255, 255, 255, .048);
+  }
+
+  .later-label {
+    color: var(--muted-2);
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+
+  .later-time {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+  }
+
+  .later-time .minutes {
+    color: #f9f3f1;
+    font-size: 28px;
+    font-weight: 750;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.035em;
+    line-height: 1;
+  }
+
+  .later-time .unit {
+    color: var(--muted);
+    font-size: 11.5px;
+  }
+
+  .later-time.is-due .minutes {
+    color: var(--accent);
+    font-size: 21px;
+    letter-spacing: -.015em;
+  }
+
+  .later-time.is-due .unit { display: none; }
+
+  .later-clock {
+    color: var(--muted);
+    font-size: 12.5px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: .01em;
+  }
+
+  .later-empty {
+    margin-top: 10px;
+    padding: 17px;
+    border: 1px dashed var(--line);
+    border-radius: 14px;
+    color: var(--muted-2);
+    font-size: 12px;
+    text-align: center;
+  }
+
+  /* ── Empty / error states ──────────────────────────── */
+  .empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    padding: 30px 22px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 20px;
+    text-align: center;
+  }
+
+  .empty-icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    margin-bottom: 14px;
+    border-radius: 12px;
+    color: var(--muted);
+    background: rgba(255, 255, 255, .045);
+  }
+
+  .empty h3 {
+    margin: 0 0 7px;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+  }
+
+  .empty p {
+    max-width: 340px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+
+  .empty button {
+    margin-top: 17px;
+    padding: 9px 15px;
+    border: 1px solid rgba(255, 77, 94, .28);
+    border-radius: 999px;
+    color: var(--accent);
+    background: rgba(255, 77, 94, .08);
+    font: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background .2s, color .2s;
+  }
+
+  .empty button:hover { color: var(--accent-ink); background: var(--accent-strong); }
+
+  /* ── Skeleton ──────────────────────────────────────── */
+  .skeleton-next,
+  .skeleton-row {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .05);
+    background: rgba(255, 255, 255, .025);
+  }
+
+  .skeleton-next {
+    height: 193px;
+    border-radius: 20px;
+  }
+
+  .skeleton-row {
+    height: 57px;
+    margin-top: 8px;
+    border-radius: 15px;
+  }
+
+  .skeleton-next::after,
+  .skeleton-row::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .055), transparent);
+    animation: shimmer 1.7s infinite;
+  }
+
+  .skeleton-next::before {
+    content: "";
+    position: absolute;
+    top: 26px;
+    left: 28px;
+    width: 64px;
+    height: 9px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, .08);
+  }
+
+  /* ── Board footer ──────────────────────────────────── */
+  .notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin-top: 12px;
+    padding: 11px 13px;
+    border: 1px solid rgba(255, 179, 64, .2);
+    border-radius: 12px;
+    color: #ffcf87;
+    background: rgba(255, 179, 64, .07);
+    font-size: 11.5px;
+    line-height: 1.45;
+  }
+
+  .notice[hidden] { display: none; }
+  .notice svg { flex: 0 0 auto; margin-top: 1px; }
+
+  .board-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 17px;
+    padding-top: 15px;
+    border-top: 1px solid var(--line);
+  }
+
+  .update {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted-2);
+    font-size: 10.5px;
+    line-height: 1.4;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .update svg { flex: 0 0 auto; opacity: .72; }
+  .update .sep { color: #4a3b3e; }
+
+  .refresh {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    flex: 0 0 auto;
+    padding: 8px 11px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    background: transparent;
+    font: inherit;
+    font-size: 10.5px;
+    font-weight: 650;
+    letter-spacing: .02em;
+    cursor: pointer;
+    transition: color .2s, border-color .2s, background .2s;
+  }
+
+  .refresh:hover {
+    color: #fff9f7;
+    border-color: var(--line-strong);
+    background: rgba(255, 237, 234, .04);
+  }
+
+  .refresh:focus-visible,
+  .empty button:focus-visible,
+  a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .refresh svg { width: 13px; height: 13px; }
+  .refresh.is-loading svg { animation: spin 1s linear infinite; }
+  .refresh:disabled { cursor: wait; opacity: .65; }
+
+  .progress-track {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    height: 2px;
+    background: rgba(255, 255, 255, .045);
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 100%;
+    transform: scaleX(1);
+    transform-origin: left center;
+    background: linear-gradient(90deg, #ff6b78 0%, #c31228 55%, #6e0712 100%);
+    box-shadow: 0 0 12px rgba(225, 29, 46, .35);
+    transition: transform .25s linear, background .3s;
+  }
+
+  .board.is-error .progress-bar {
+    background: linear-gradient(90deg, rgba(255, 179, 64, .9), #ff8a3d);
+  }
+
+  /* ── Return direction ──────────────────────────────── */
+  .return-section {
+    margin-top: clamp(38px, 7vw, 56px);
+  }
+
+  .return-heading { margin-bottom: 19px; }
+
+  .return-heading .eyebrow { margin-bottom: 11px; }
+
+  .return-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 10px;
+    row-gap: 2px;
+    margin: 0;
+    font-size: clamp(23px, 3.9vw, 31px);
+    font-weight: 750;
+    letter-spacing: -.04em;
+    line-height: 1.1;
+  }
+
+  .return-title > span:not(.route-arrow) { white-space: nowrap; }
+  .return-title .route-arrow svg { width: 31px; height: 18px; }
+
+  .return-sub { margin-top: 8px; font-size: 12.5px; }
+
+  /* ── Page footer ───────────────────────────────────── */
+  .page-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    margin-top: 17px;
+    padding: 0 4px;
+    color: var(--muted-2);
+    font-size: 10.5px;
+    line-height: 1.4;
+  }
+
+  .page-foot a {
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px dotted rgba(255, 237, 234, .2);
+    transition: color .2s, border-color .2s;
+  }
+
+  .page-foot a:hover {
+    color: var(--accent);
+    border-color: rgba(255, 77, 94, .5);
+  }
+
+  /* ── Motion ────────────────────────────────────────── */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes wing-breathe {
+    0%, 100% { opacity: .86; }
+    50%      { opacity: .98; }
+  }
+
+  @keyframes halo-breathe {
+    0%, 100% { opacity: .58; transform: scale(.96); }
+    50%      { opacity: 1; transform: scale(1.04); }
+  }
+
+  @keyframes gem-breathe {
+    0%, 100% { filter: drop-shadow(0 0 5px rgba(212, 175, 55, .45)); }
+    50%      { filter: drop-shadow(0 0 11px rgba(212, 175, 55, .7)); }
+  }
+
+  @keyframes live-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(72, 224, 139, .32); }
+    55%      { box-shadow: 0 0 0 5px rgba(72, 224, 139, 0); }
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @keyframes shimmer {
+    100% { transform: translateX(100%); }
+  }
+
+  @media (max-width: 720px) {
+    .topbar {
+      grid-template-columns: minmax(0, 1fr) auto;
+      row-gap: 15px;
+    }
+
+    .brand {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .status-pill {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .masthead {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+
+    .masthead-rule { width: 26px; }
+    .tagline { font-size: 15px; letter-spacing: .19em; text-indent: .19em; }
+    .wing-crest { height: 33px; gap: 6px; }
+    .wing { width: 62px; height: 33px; }
+    .wing-crest::before { width: 158px; height: 38px; }
+    .crest-gem { margin-bottom: 7px; }
+  }
+
+  @media (max-width: 560px) {
+    .board-head { margin-bottom: 14px; }
+    .next-card { gap: 10px; }
+    .next-side { padding-bottom: 2px; }
+    .side-stop { display: none; }
+    .later-row { grid-template-columns: 46px 1fr auto; padding: 13px 14px; }
+    .board-foot { align-items: flex-end; }
+    .return-section { margin-top: 38px; }
+  }
+
+  @media (max-width: 390px) {
+    .brand-sub { display: none; }
+    .next-time { gap: 7px; min-height: 76px; }
+    .next-time .minutes { font-size: 72px; }
+    .next-side { max-width: 82px; }
+    .side-label { font-size: 8.5px; }
+    .side-clock { font-size: 19px; }
+    .route-title { column-gap: 10px; }
+    .route-arrow svg { width: 31px; }
+    .return-title { column-gap: 8px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: .01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+<svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="wingCrease" x1="8" y1="50" x2="112" y2="4" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2b0b11" stop-opacity=".03"></stop>
+      <stop offset=".34" stop-color="#2b0b11" stop-opacity=".24"></stop>
+      <stop offset=".78" stop-color="#2b0b11" stop-opacity=".16"></stop>
+      <stop offset="1" stop-color="#2b0b11" stop-opacity=".02"></stop>
+    </linearGradient>
+    <filter id="wingEdgeBlur" x="-20%" y="-50%" width="140%" height="200%">
+      <feGaussianBlur stdDeviation="1.4"></feGaussianBlur>
+    </filter>
+    <filter id="wingSoften" x="-15%" y="-25%" width="130%" height="150%">
+      <feGaussianBlur stdDeviation=".22"></feGaussianBlur>
+    </filter>
+    <g id="wingArt">
+      <g fill="#ffffff" filter="url(#wingSoften)">
+        <path d="M14 59C34 57 56 53 72 48C74 51 65 56 54 58C41 61 27 62 14 61Z"></path>
+        <path d="M12 57C36 54 63 48 84 41C86 44 76 50 63 54C47 58 28 60 12 59Z"></path>
+        <path d="M11 55C37 51 69 42 94 33C96 37 85 44 72 49C54 55 31 58 11 57Z"></path>
+        <path d="M10 53C39 46 73 35 102 24C104 28 93 36 80 42C60 50 34 56 10 55Z"></path>
+        <path d="M9 51C40 41 78 26 108 14C110 18 99 27 86 34C64 45 36 52 9 53Z"></path>
+        <path d="M8 48C38 35 78 16 112 4C114 8 103 17 91 25C68 39 37 48 8 50Z"></path>
+      </g>
+      <g fill="none" stroke="url(#wingCrease)" stroke-width=".9" stroke-linecap="round" filter="url(#wingSoften)">
+        <path d="M112 4C114 8 103 17 91 25C68 39 37 48 8 50"></path>
+        <path d="M108 14C110 18 99 27 86 34C64 45 36 52 9 53"></path>
+        <path d="M102 24C104 28 93 36 80 42C60 50 34 56 10 55"></path>
+        <path d="M94 33C96 37 85 44 72 49C54 55 31 58 11 57"></path>
+        <path d="M84 41C86 44 76 50 63 54C47 58 28 60 12 59"></path>
+        <path d="M72 48C74 51 65 56 54 58C41 61 27 62 14 61"></path>
+      </g>
+      <path d="M8 48C38 35 78 16 112 4" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" opacity=".2" filter="url(#wingEdgeBlur)"></path>
+      <path d="M8 48C38 35 78 16 112 4" stroke="#ffffff" stroke-width="1.7" stroke-linecap="round" opacity=".18"></path>
+      <path d="M8 48C38 35 78 16 112 4" stroke="#ffffff" stroke-width=".65" stroke-linecap="round" opacity=".85"></path>
+    </g>
+  </defs>
+</svg>
+
+<main class="shell">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="3.4" width="16" height="14.2" rx="3.2"></rect>
+          <path d="M7.5 7.4h9M7.5 10.7h9M8.2 17.6v2.3M15.8 17.6v2.3"></path>
+          <path d="M8.1 14.1h.01M15.9 14.1h.01" stroke-width="2.6"></path>
+        </svg>
+      </div>
+      <div class="brand-copy">
+        <span class="brand-name">CITYBUS</span>
+        <span class="brand-sub">Live departures · Hong Kong</span>
+      </div>
+    </div>
+
+    <div class="masthead" aria-label="与翅同行，一路相伴">
+      <div class="wing-crest" aria-hidden="true">
+        <svg class="wing wing-left" viewBox="0 0 120 64" fill="none">
+          <use href="#wingArt"></use>
+        </svg>
+        <span class="crest-gem"></span>
+        <svg class="wing wing-right" viewBox="0 0 120 64" fill="none">
+          <use href="#wingArt"></use>
+        </svg>
+      </div>
+      <div class="tagline-row">
+        <span class="masthead-rule" aria-hidden="true"></span>
+        <p class="tagline" lang="zh-Hans">与翅同行，一路相伴</p>
+        <span class="masthead-rule" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <div class="status-pill" id="statusPill" data-state="connecting" role="status" aria-live="polite">
+      <span class="status-dot"></span>
+      <span id="statusText">Connecting</span>
+    </div>
+  </header>
+
+  <section class="hero" aria-labelledby="routeTitle">
+    <div class="eyebrow">
+      <span class="route-chip">B3A</span>
+      <span class="eyebrow-text">Citybus · Real-time · Outbound</span>
+    </div>
+    <h1 class="route-title" id="routeTitle">
+      <span>Fu Tai Estate</span>
+      <span class="route-arrow" aria-hidden="true">
+        <svg viewBox="0 0 44 24" fill="none">
+          <path d="M2 12h38M31 3l9 9-9 9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </span>
+      <span>Shenzhen Bay Port</span>
+    </h1>
+    <p class="route-sub">
+      <span class="zh" lang="zh-Hant">富泰邨</span>
+      <span class="minor-arrow" aria-hidden="true">→</span>
+      <span class="zh" lang="zh-Hant">深圳灣口岸</span>
+      <span class="sep" aria-hidden="true">·</span>
+      <span>Castle Peak Road</span>
+    </p>
+  </section>
+
+  <section class="board" data-board="outbound" aria-label="Next B3A departures from Fu Tai Estate to Shenzhen Bay Port">
+    <div class="board-head">
+      <h2>Next departures</h2>
+      <span class="board-clock" data-clock>—</span>
+    </div>
+
+    <div class="departures" data-departures aria-live="polite" aria-atomic="false">
+      <div class="skeleton-next"></div>
+      <div class="skeleton-row"></div>
+      <div class="skeleton-row"></div>
+    </div>
+
+    <div class="notice" data-notice role="status" hidden>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M12 8v5M12 17h.01"></path>
+        <path d="M10.3 3.8 2.6 17.1a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0Z"></path>
+      </svg>
+      <span data-notice-text>Live update failed.</span>
+    </div>
+
+    <div class="board-foot">
+      <div class="update">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="8.7"></circle>
+          <path d="M12 7.4V12l3 1.8"></path>
+        </svg>
+        <span data-updated>Waiting for live data…</span>
+        <span class="sep" aria-hidden="true">·</span>
+        <span data-refresh>Refreshes in 30s</span>
+      </div>
+      <button class="refresh" data-refresh-btn type="button" aria-label="Refresh outbound departure times now">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20.2 11a8.2 8.2 0 1 0-.6 4.6"></path>
+          <path d="M20.4 4.8V11h-6.2"></path>
+        </svg>
+        <span>Refresh</span>
+      </button>
+    </div>
+
+    <div class="progress-track" aria-hidden="true">
+      <div class="progress-bar" data-progress></div>
+    </div>
+  </section>
+
+  <section class="return-section" aria-labelledby="returnTitle">
+    <div class="return-heading">
+      <div class="eyebrow">
+        <span class="route-chip">B3A</span>
+        <span class="eyebrow-text">Return schedule · Live</span>
+      </div>
+      <h2 class="return-title" id="returnTitle">
+        <span>Shenzhen Bay Port</span>
+        <span class="route-arrow" aria-hidden="true">
+          <svg viewBox="0 0 44 24" fill="none">
+            <path d="M2 12h38M31 3l9 9-9 9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </span>
+        <span>Fu Tai</span>
+      </h2>
+      <p class="route-sub return-sub">
+        <span class="zh" lang="zh-Hant">深圳灣口岸</span>
+        <span class="minor-arrow" aria-hidden="true">→</span>
+        <span class="zh" lang="zh-Hant">富泰商場</span>
+        <span class="sep" aria-hidden="true">·</span>
+        <span>Alight at Fu Tai Shopping Centre · Castle Peak Road</span>
+      </p>
+    </div>
+
+    <div class="board" data-board="inbound" aria-label="Next B3A departures from Shenzhen Bay Port to Fu Tai">
+      <div class="board-head">
+        <h2>Next departures</h2>
+        <span class="board-clock" data-clock>—</span>
+      </div>
+
+      <div class="departures" data-departures aria-live="polite" aria-atomic="false">
+        <div class="skeleton-next"></div>
+        <div class="skeleton-row"></div>
+        <div class="skeleton-row"></div>
+      </div>
+
+      <div class="notice" data-notice role="status" hidden>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M12 8v5M12 17h.01"></path>
+          <path d="M10.3 3.8 2.6 17.1a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0Z"></path>
+        </svg>
+        <span data-notice-text>Live update failed.</span>
+      </div>
+
+      <div class="board-foot">
+        <div class="update">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="8.7"></circle>
+            <path d="M12 7.4V12l3 1.8"></path>
+          </svg>
+          <span data-updated>Waiting for live data…</span>
+          <span class="sep" aria-hidden="true">·</span>
+          <span data-refresh>Refreshes in 30s</span>
+        </div>
+        <button class="refresh" data-refresh-btn type="button" aria-label="Refresh return departure times now">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20.2 11a8.2 8.2 0 1 0-.6 4.6"></path>
+            <path d="M20.4 4.8V11h-6.2"></path>
+          </svg>
+          <span>Refresh</span>
+        </button>
+      </div>
+
+      <div class="progress-track" aria-hidden="true">
+        <div class="progress-bar" data-progress></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="page-foot">
+    <span>Real-time data from <a href="https://data.gov.hk/en/" target="_blank" rel="noopener noreferrer">DATA.GOV.HK</a> · Citybus open data</span>
+    <span>Auto-refresh every 30 sec</span>
+  </footer>
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  const REFRESH_MS = 30000;
+  const API_BASE = 'https://rt.data.gov.hk/v2/transport/citybus/eta/CTB/';
+
+  const CONFIGS = {
+    outbound: {
+      id: 'outbound',
+      dir: 'O',
+      stop: '003261', // Fu Tai Estate, Castle Peak Road
+      arrivalStop: 'Fu Tai Estate'
+    },
+    inbound: {
+      id: 'inbound',
+      dir: 'I',
+      stop: '003262', // Fu Tai Shopping Centre, Castle Peak Road
+      arrivalStop: 'Fu Tai'
+    }
+  };
+
+  const el = {
+    statusPill: document.getElementById('statusPill'),
+    statusText: document.getElementById('statusText')
+  };
+
+  const clockFmt = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Hong_Kong',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  });
+
+  const clockSecondsFmt = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Hong_Kong',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  });
+
+  const dateFmt = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Hong_Kong',
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short'
+  });
+
+  const boardStates = {
+    outbound: 'connecting',
+    inbound: 'connecting'
+  };
+
+  let serverOffset = 0;
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, (ch) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[ch]));
+  }
+
+  function dateLabel(ms) {
+    const parts = dateFmt.formatToParts(new Date(ms));
+    const get = (type) => (parts.find((part) => part.type === type) || {}).value || '';
+    return (get('weekday') + ' ' + get('day') + ' ' + get('month')).trim();
+  }
+
+  function minuteParts(etaMs, nowMs) {
+    const diff = etaMs - nowMs;
+    if (diff < 60000) {
+      return { label: 'Due', unit: '', due: true };
+    }
+    return {
+      label: String(Math.floor(diff / 60000)),
+      unit: 'min',
+      due: false
+    };
+  }
+
+  function setStatus(state, text) {
+    el.statusPill.dataset.state = state;
+    el.statusText.textContent = text;
+  }
+
+  function updateGlobalStatus() {
+    const states = Object.values(boardStates);
+    if (states.includes('connecting')) {
+      setStatus('connecting', 'Connecting');
+    } else if (states.includes('error')) {
+      setStatus('error', 'Reconnecting');
+    } else {
+      setStatus('live', 'Live');
+    }
+  }
+
+  function setBoardState(id, state) {
+    boardStates[id] = state;
+    updateGlobalStatus();
+  }
+
+  function createBoard(root, config) {
+    const els = {
+      clock: root.querySelector('[data-clock]'),
+      departures: root.querySelector('[data-departures]'),
+      notice: root.querySelector('[data-notice]'),
+      noticeText: root.querySelector('[data-notice-text]'),
+      updated: root.querySelector('[data-updated]'),
+      refresh: root.querySelector('[data-refresh]'),
+      refreshBtn: root.querySelector('[data-refresh-btn]'),
+      progress: root.querySelector('[data-progress]')
+    };
+
+    const api = API_BASE + config.stop + '/B3A';
+    let buses = [];
+    let lastUpdated = 0;
+    let loading = false;
+    let lastError = false;
+    let nextRefreshAt = Date.now() + REFRESH_MS;
+    let refreshTimer = null;
+
+    function now() {
+      return Date.now() + serverOffset;
+    }
+
+    function renderEmpty(isError) {
+      const icon = isError
+        ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 8v5M12 17h.01"></path><circle cx="12" cy="12" r="9"></circle></svg>'
+        : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.4" width="16" height="14.2" rx="3.2"></rect><path d="M7.5 7.4h9M7.5 10.7h9M8.2 17.6v2.3M15.8 17.6v2.3"></path></svg>';
+
+      const title = isError ? 'Live times unavailable' : 'No buses showing right now';
+      const copy = isError
+        ? 'Couldn’t reach the Citybus data feed. Check your connection, then try again.'
+        : 'Citybus isn’t reporting an upcoming departure for this direction. Try again in a moment.';
+
+      els.departures.innerHTML =
+        '<div class="empty">' +
+          '<div class="empty-icon" aria-hidden="true">' + icon + '</div>' +
+          '<h3>' + title + '</h3>' +
+          '<p>' + copy + '</p>' +
+          '<button type="button" data-action="retry">Check again</button>' +
+        '</div>';
+    }
+
+    function renderBuses() {
+      if (!buses.length) {
+        renderEmpty(false);
+        return;
+      }
+
+      const first = buses[0];
+      const firstTime = minuteParts(first.etaMs, now());
+      const firstNote = first.remark
+        ? '<span class="remark">' + escapeHtml(first.remark) + '</span>'
+        : 'Live Citybus estimate';
+
+      let html =
+        '<article class="next-card">' +
+          '<div class="next-main">' +
+            '<div class="next-label"><span class="dot" aria-hidden="true"></span>Next bus</div>' +
+            '<div class="next-time' + (firstTime.due ? ' is-due' : '') + '" data-eta="' + first.etaMs + '">' +
+              '<span class="minutes js-minutes">' + firstTime.label + '</span>' +
+              '<span class="unit js-unit">' + firstTime.unit + '</span>' +
+            '</div>' +
+            '<div class="next-note">' + firstNote + '</div>' +
+          '</div>' +
+          '<div class="next-side">' +
+            '<div class="side-label">Arriving at</div>' +
+            '<div class="side-clock">' + first.clock + '</div>' +
+            '<div class="side-stop">' + escapeHtml(config.arrivalStop) + '</div>' +
+          '</div>' +
+        '</article>';
+
+      if (buses.length > 1) {
+        html += '<div class="later-list">';
+        for (let i = 1; i < buses.length; i += 1) {
+          const bus = buses[i];
+          const time = minuteParts(bus.etaMs, now());
+          html +=
+            '<div class="later-row">' +
+              '<span class="later-label">Then</span>' +
+              '<div class="later-time' + (time.due ? ' is-due' : '') + '" data-eta="' + bus.etaMs + '">' +
+                '<span class="minutes js-minutes">' + time.label + '</span>' +
+                '<span class="unit js-unit">' + time.unit + '</span>' +
+              '</div>' +
+              '<time class="later-clock" datetime="' + new Date(bus.etaMs).toISOString() + '">' + bus.clock + '</time>' +
+            '</div>';
+        }
+        html += '</div>';
+      } else {
+        html += '<div class="later-empty">No further departures reported yet.</div>';
+      }
+
+      els.departures.innerHTML = html;
+    }
+
+    function updateTimes() {
+      const nowMs = now();
+
+      els.departures.querySelectorAll('[data-eta]').forEach((node) => {
+        const etaMs = Number(node.dataset.eta);
+        if (!Number.isFinite(etaMs)) return;
+
+        const time = minuteParts(etaMs, nowMs);
+        const minutesEl = node.querySelector('.js-minutes');
+        const unitEl = node.querySelector('.js-unit');
+
+        if (minutesEl && minutesEl.textContent !== time.label) {
+          minutesEl.textContent = time.label;
+        }
+        if (unitEl && unitEl.textContent !== time.unit) {
+          unitEl.textContent = time.unit;
+        }
+        node.classList.toggle('is-due', time.due);
+      });
+    }
+
+    function tick() {
+      const nowMs = now();
+      const left = Math.max(0, nextRefreshAt - Date.now());
+      const seconds = Math.max(0, Math.ceil(left / 1000));
+
+      els.clock.textContent = dateLabel(nowMs) + ' · ' + clockFmt.format(new Date(nowMs)) + ' HKT';
+
+      if (loading) {
+        els.refresh.textContent = 'Updating…';
+      } else if (lastError) {
+        els.refresh.textContent = 'Retry in ' + seconds + 's';
+      } else {
+        els.refresh.textContent = 'Refreshes in ' + seconds + 's';
+      }
+
+      els.progress.style.transform = 'scaleX(' + (left / REFRESH_MS) + ')';
+      updateTimes();
+    }
+
+    function scheduleRefresh() {
+      clearTimeout(refreshTimer);
+      nextRefreshAt = Date.now() + REFRESH_MS;
+      refreshTimer = setTimeout(() => load(), REFRESH_MS);
+    }
+
+    async function load(options = {}) {
+      if (loading) return;
+      loading = true;
+
+      if (options.manual) {
+        els.refreshBtn.classList.add('is-loading');
+        els.refreshBtn.disabled = true;
+      }
+
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 12000);
+
+      try {
+        const response = await fetch(api, {
+          cache: 'no-store',
+          signal: controller.signal,
+          headers: { Accept: 'application/json' }
+        });
+
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status);
+        }
+
+        const payload = await response.json();
+
+        if (payload && payload.generated_timestamp) {
+          const generated = Date.parse(payload.generated_timestamp);
+          if (Number.isFinite(generated)) {
+            serverOffset = generated - Date.now();
+          }
+        }
+
+        const nowMs = now();
+        const rows = Array.isArray(payload.data) ? payload.data : [];
+
+        buses = rows
+          .filter((item) => item && item.dir === config.dir && item.eta)
+          .map((item) => {
+            const etaMs = Date.parse(item.eta);
+            return {
+              etaMs,
+              clock: Number.isFinite(etaMs) ? clockFmt.format(new Date(etaMs)) : '',
+              remark: String(item.rmk_en || '').trim()
+            };
+          })
+          .filter((item) => Number.isFinite(item.etaMs) && item.etaMs > nowMs - 60000)
+          .sort((a, b) => a.etaMs - b.etaMs)
+          .slice(0, 3);
+
+        lastUpdated = nowMs;
+        lastError = false;
+        els.notice.hidden = true;
+        root.classList.remove('is-error');
+        renderBuses();
+        updateTimes();
+
+        setBoardState(config.id, 'live');
+        els.updated.textContent = 'Updated ' + clockSecondsFmt.format(new Date(lastUpdated)) + ' HKT';
+      } catch (error) {
+        lastError = true;
+
+        if (buses.length) {
+          els.noticeText.textContent = 'Couldn’t refresh the live feed. Showing the last known times.';
+          els.notice.hidden = false;
+          root.classList.add('is-error');
+          setBoardState(config.id, 'error');
+        } else {
+          renderEmpty(true);
+          els.notice.hidden = true;
+          root.classList.add('is-error');
+          setBoardState(config.id, 'error');
+        }
+      } finally {
+        clearTimeout(timeout);
+        loading = false;
+
+        if (options.manual) {
+          els.refreshBtn.classList.remove('is-loading');
+          els.refreshBtn.disabled = false;
+        }
+
+        scheduleRefresh();
+        tick();
+      }
+    }
+
+    els.refreshBtn.addEventListener('click', () => load({ manual: true }));
+
+    els.departures.addEventListener('click', (event) => {
+      const retry = event.target.closest('[data-action="retry"]');
+      if (retry) load({ manual: true });
+    });
+
+    return {
+      load,
+      tick,
+      refreshIfVisible() {
+        if (Date.now() >= nextRefreshAt) load();
+      }
+    };
+  }
+
+  const boards = Array.from(document.querySelectorAll('[data-board]')).map((root) => {
+    const id = root.dataset.board;
+    return createBoard(root, CONFIGS[id]);
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      boards.forEach((board) => board.refreshIfVisible());
+    }
+  });
+
+  updateGlobalStatus();
+  boards.forEach((board) => {
+    board.tick();
+    board.load();
+  });
+  setInterval(() => boards.forEach((board) => board.tick()), 1000);
+})();
+</script>
+</body>
+</html>
